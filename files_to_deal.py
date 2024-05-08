@@ -243,18 +243,23 @@ def files_to_archive():
 
     selected_user_id, selected_file_name = get_selected_user_and_file(source_dir, sh_dir, sorted_user_folders)
     log_message("INFO", f"selected_user_id, selected_file_name {selected_user_id} {selected_file_name}")
+    
 
+    # Define a flag to indicate if the last selected file has been encountered
+    file_encountered = False
 
     for user_id in sorted_user_folders[sorted_user_folders.index(selected_user_id):]:
         user_folder_path = os.path.join(source_dir, user_id, "files")
         # Exit loop if total size meets the minimum size condition
         if total_size >= min_size * (1024 ** 3):
             break
+
         if os.path.exists(user_folder_path) and os.path.isdir(user_folder_path):
             for root, dirs, files in os.walk(user_folder_path):
                 # Exit loop if total size meets the minimum size condition
                 if total_size >= min_size * (1024 ** 3):
                     break
+
                 for file_name in files:
                     # Exit loop if total size meets the minimum size condition
                     if total_size >= min_size * (1024 ** 3):
@@ -265,24 +270,29 @@ def files_to_archive():
                     file_m_time = datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) # File modification time
                     is_target = file_m_time < target_hours_ago
 
-                    file = {
-                        'file_path': file_path,
-                        'file_name': file_name,
-                        'file_size': file_size,
-                        'file_m_time': file_m_time,
-                        'is_target': is_target
-                    }
 
-                    if is_target:
-                        if (total_size + file_size) <= max_size * (1024 ** 3):
-                            selected_files.append(file)
-                            log_message("INFO", f"appending files: {file}")
-                            total_size += file_size
-                            selected_user_id = user_id
-                            selected_file_name = file_path
-                        else:
-                            log_message("INFO", "Skipping file addition, max_size exceeded")
+                    if file_encountered:
+                        file = {
+                            'file_path': file_path,
+                            'file_name': file_name,
+                            'file_size': file_size,
+                            'file_m_time': file_m_time,
+                            'is_target': is_target
+                        }
 
+                        if is_target:
+                            if (total_size + file_size) <= max_size * (1024 ** 3):
+                                selected_files.append(file)
+                                log_message("INFO", f"appending files: {file}")
+                                total_size += file_size
+                                selected_user_id = user_id
+                                selected_file_name = file_path
+                            else:
+                                log_message("INFO", "Skipping file addition, max_size exceeded")
+
+	                # Check if the current file is the last selected file
+                    if file_path == selected_file_name:
+                        file_encountered = True
 
     if not selected_files:
         log_message("WARN", "No files selected")

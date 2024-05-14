@@ -2,7 +2,7 @@
 #########################################################################################
 # Author  : Hong
 # Created : 5/8/2024
-# Modified: 5/8/2024
+# Modified: 5/14/2024
 # Notes   :
 #########################################################################################
 import time
@@ -43,6 +43,14 @@ def get_next_file_number(file_prefix, target_dir):
         return max_file_number + 1
     else:
         return 1
+
+
+def get_rm_number(file_number):
+    if file_number % 10 == 1:
+        new_number = file_number - 10
+        new_file_number = f"{new_number // 10:04d}*"
+        return new_file_number
+    return None
 
 
 def get_log_time():
@@ -317,7 +325,15 @@ def files_to_archive():
     deal_file_path = os.path.join(target_dir, deal_file_name)
     selected_file_paths = [file['file_path'] for file in selected_files]
 
-    
+   
+    rm_number = get_rm_number(archive_file_number)
+    if rm_number:
+        rm_dir_name = f"{file_prefix}{rm_number}"
+        rm_command = f"rm {os.path.join(target_dir, rm_dir_name)}"
+        log_message("INFO", f"Executing rm command: {rm_command}")        
+        subprocess.run(rm_command, shell=True)
+
+
     log_message('INFO', f"Generating archive name: {archive_file_name}")
     
     try:

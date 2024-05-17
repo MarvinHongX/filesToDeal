@@ -17,10 +17,10 @@ fi
 
 process_count=$(ps aux | grep "deal.py" | grep -v "grep" | wc -l)
 
-#if [ $process_count -gt 0 ]; then
-#    echo "deal.py is already running."
-#    exit
-#fi
+if [ $process_count -gt 0 ]; then
+    echo "deal.py is already running."
+    exit
+fi
 
 
 python3 /root/sh/filesToDeal/files_to_deal.py  >> /root/log/files_to_deal.log 2>&1 &

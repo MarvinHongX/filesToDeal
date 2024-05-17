@@ -2,7 +2,7 @@
 #########################################################################################
 # Author  : Hong
 # Created : 5/8/2024
-# Modified: 5/14/2024
+# Modified: 5/17/2024
 # Notes   :
 #########################################################################################
 import time
@@ -117,7 +117,6 @@ def get_selected_user_and_file(source_dir, sh_dir, sorted_user_folders):
 
 def get_payload_cid(car_file_path):
     car_path = os.getenv("CAR_PATH")
-    #payload_cid_command = ["car", "root", car_file_path]
     payload_cid_command = [car_path, "root", car_file_path]
     payload_cid_process = subprocess.Popen(payload_cid_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     payload_cid_output, _ = payload_cid_process.communicate()
@@ -152,7 +151,7 @@ def get_commp_info(car_file_path):
 def write_deal_commands(deal_file, miner_ids, archive_dir_name, commp_cid, piece_size, car_file_size, payload_cid, wallet_address):
     web_server_ip = os.getenv("WEB_SERVER_IP")
     for miner_id in miner_ids:
-        time.sleep(3)
+        time.sleep(1)
         deal_file.write(f"boost -vv deal --verified=true --provider={miner_id} "
                         f"--http-url=http://{web_server_ip}/http/{archive_dir_name}.tar.aes.car "
                         f"--commp={commp_cid} "
@@ -174,7 +173,7 @@ def get_miner_ids(last_4_digits):
         return [
             os.getenv("MINER01"),
             os.getenv("MINER02"),
-            os.getenv("MINER04"),
+            os.getenv("MINER05"),
             os.getenv("MINER06")
         ]
 
@@ -221,6 +220,7 @@ def get_commp_cid(file_path):
     log_message("INFO", f"commp_cid: {commp_cid}")
 
     return commp_cid
+
 
 def files_to_archive():
     sh_dir = os.getenv("SH_DIR")
@@ -359,7 +359,6 @@ def files_to_archive():
     car_file_name = f"{archive_dir_name}.tar.aes.car"
     car_file_path = os.path.join(target_dir, car_file_name)
     car_path = os.getenv("CAR_PATH")
-    #car_command = ["car", "create", "-f", car_file_path, "--version", "1", aes_archive_file_path]
     car_command = [car_path, "create", "-f", car_file_path, "--version", "1", aes_archive_file_path]
 
     try:

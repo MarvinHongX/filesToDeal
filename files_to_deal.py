@@ -161,8 +161,8 @@ def write_deal_commands(deal_file, miner_ids, archive_dir_name, commp_cid, piece
                         f"--duration=1555200 --wallet={wallet_address}\n")
 
 
-def get_miner_ids(last_4_digits):
-    if last_4_digits % 2 == 0:  # Even
+def get_miner_ids(last_digits):
+    if last_digits % 2 == 0:  # Even
         return [
             os.getenv("MINER02"),
             os.getenv("MINER03"),
@@ -393,7 +393,7 @@ def files_to_archive():
     try:
         subprocess.run(car_command, check=True)
         os.remove(aes_archive_file_path)
-        time.sleep(3)
+        time.sleep(1)
         log_message("INFO", f"CAR file created: {car_file_name}")
     except subprocess.CalledProcessError as e:
         log_message("ERROR", f"Error creating CAR file: {e}")
@@ -406,8 +406,8 @@ def files_to_archive():
     commp_cid = ''
 
     wallet_address = os.getenv("WALLET_ADDRESS")
-    last_5_digits = int(archive_dir_name[-5:])
-    miner_ids = get_miner_ids(last_5_digits)
+    last_digits = int(archive_dir_name[-5:])
+    miner_ids = get_miner_ids(last_digits)
 
     log_message("INFO", f"{miner_ids} {wallet_address} {car_file_path}")
 

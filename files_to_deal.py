@@ -2,7 +2,7 @@
 #########################################################################################
 # Author  : Hong
 # Created : 5/8/2024
-# Modified: 5/17/2024
+# Modified: 5/21/2024
 # Notes   :
 #########################################################################################
 import time
@@ -48,7 +48,7 @@ def get_next_file_number(file_prefix, target_dir):
 def get_rm_number(file_number):
     if file_number % 10 == 1:
         new_number = file_number - 10
-        new_file_number = f"{new_number // 10:04d}*"
+        new_file_number = f"{new_number // 10:05d}*"
         return new_file_number
     return None
 
@@ -151,7 +151,7 @@ def get_commp_info(car_file_path):
 def write_deal_commands(deal_file, miner_ids, archive_dir_name, commp_cid, piece_size, car_file_size, payload_cid, wallet_address):
     web_server_ip = os.getenv("WEB_SERVER_IP")
     for miner_id in miner_ids:
-        time.sleep(1)
+        time.sleep(2)
         deal_file.write(f"boost -vv deal --verified=true --provider={miner_id} "
                         f"--http-url=http://{web_server_ip}/http/{archive_dir_name}.tar.aes.car "
                         f"--commp={commp_cid} "
@@ -223,6 +223,7 @@ def get_commp_cid(file_path):
 
 
 def files_to_archive():
+    server_id = os.getenv("SERVER_ID")
     sh_dir = os.getenv("SH_DIR")
     source_dir = os.getenv("SOURCE_DIR")
     target_dir = os.getenv("TARGET_DIR")
@@ -250,7 +251,8 @@ def files_to_archive():
     log_message("INFO", f"source_dir, sorted_user_folders {source_dir} {sorted_user_folders}")
 
     selected_user_id, selected_file_name = get_selected_user_and_file(source_dir, sh_dir, sorted_user_folders)
-    log_message("INFO", f"selected_user_id, selected_file_name {selected_user_id} {selected_file_name}")
+    log_message("INFO", f"selected_user_id: {selected_user_id}")
+    log_message("INFO", f"selected_file_name: {selected_file_name}")
     
 
     # Define a flag to indicate if the last selected file has been encountered
@@ -314,7 +316,7 @@ def files_to_archive():
     log_message("INFO", f"total_size is {total_size} ({bytes_to_gib(total_size)}GiB)")
 
     # Create archive
-    file_prefix = f"{timestamp}-"
+    file_prefix = f"{timestamp}{server_id}-"
     archive_file_number = get_next_file_number(file_prefix, target_dir)
     archive_dir_name = f"{file_prefix}{archive_file_number:05}"
     archive_file_name = f"{archive_dir_name}.tar"
@@ -364,7 +366,7 @@ def files_to_archive():
     try:
         subprocess.run(car_command, check=True)
         os.remove(aes_archive_file_path)
-        time.sleep(2)
+        time.sleep(3)
         log_message("INFO", f"CAR file created: {car_file_name}")
     except subprocess.CalledProcessError as e:
         log_message("ERROR", f"Error creating CAR file: {e}")

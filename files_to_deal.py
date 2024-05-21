@@ -315,6 +315,33 @@ def files_to_archive():
 
     log_message("INFO", f"total_size is {total_size} ({bytes_to_gib(total_size)}GiB)")
 
+    # Append more
+    file_path = os.path.join(target_dir, 'README.MD')
+
+    current_unix_time = datetime.datetime.now().timestamp()
+
+    if os.path.exists(file_path):
+        with open(file_path, 'w') as file:
+            file.write(f"This file was created at Unix time: {current_unix_time}")
+    else:
+        with open(file_path, 'x') as file:
+            file.write(f"This file was created at Unix time: {current_unix_time}")
+
+    file_size = os.path.getsize(file_path)
+    file_m_time = datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) # File modification time
+    is_target = True
+
+    file = {
+        'file_path': file_path,
+        'file_name': file_name,
+        'file_size': file_size,
+        'file_m_time': file_m_time,
+        'is_target': is_target
+    }
+
+    selected_files.append(file)
+
+
     # Create archive
     file_prefix = f"{timestamp}{server_id}-"
     archive_file_number = get_next_file_number(file_prefix, target_dir)

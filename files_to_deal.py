@@ -48,7 +48,7 @@ def get_next_file_number(file_prefix, target_dir):
 def get_rm_number(file_number):
     if file_number % 10 == 1:
         new_number = file_number - 10
-        new_file_number = f"{new_number // 10:05d}*"
+        new_file_number = f"{new_number // 10:04d}*"
         return new_file_number
     return None
 

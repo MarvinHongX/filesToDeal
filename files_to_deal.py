@@ -2,7 +2,7 @@
 #########################################################################################
 # Author  : Hong
 # Created : 5/8/2024
-# Modified: 5/21/2024
+# Modified: 5/24/2024
 # Notes   :
 #########################################################################################
 import time
@@ -162,12 +162,18 @@ def write_deal_commands(deal_file, miner_ids, archive_dir_name, commp_cid, piece
 
 
 def get_miner_ids(last_digits):
+    #return [
+    #    os.getenv("MINER01"),
+    #    os.getenv("MINER04"),
+    #    os.getenv("MINER05"),
+    #    os.getenv("MINER06")
+    #]
     if last_digits % 2 == 0:  # Even
         return [
-            os.getenv("MINER02"),
-            os.getenv("MINER03"),
+            os.getenv("MINER01"),
             os.getenv("MINER04"),
-            os.getenv("MINER05")
+            os.getenv("MINER05"),
+            os.getenv("MINER06")
         ]
     else:  # Odd
         return [
@@ -223,6 +229,7 @@ def get_commp_cid(file_path):
 
 
 def files_to_archive():
+    time_sleep = float(os.getenv("TIME_SLEEP"))
     server_id = os.getenv("SERVER_ID")
     sh_dir = os.getenv("SH_DIR")
     source_dir = os.getenv("SOURCE_DIR")
@@ -238,7 +245,9 @@ def files_to_archive():
     total_size = 0.0
 
     log_message("INFO", f"Initiating Archive Process for {source_dir}")
+    log_message("INFO", f"Wait for {time_sleep} sec")
 
+    time.sleep(time_sleep)
 
     # Create directories if they don't exist
     if not os.path.exists(target_dir):

@@ -166,7 +166,7 @@ def get_miner_ids(last_digits):
 
     return [
         os.getenv("MINER01"),
-        os.getenv("MINER02"),
+        os.getenv("MINER03"),
         os.getenv("MINER04"),
         os.getenv("MINER05"),
         os.getenv("MINER06")

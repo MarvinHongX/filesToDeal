@@ -163,19 +163,10 @@ def write_deal_commands(deal_file, miner_ids, archive_dir_name, commp_cid, piece
 
 def get_miner_ids(last_digits):
     deal_option = os.getenv("DEALOPTION")
-
-    return [
-        os.getenv("MINER01"),
-        os.getenv("MINER03"),
-        os.getenv("MINER04"),
-        os.getenv("MINER05"),
-        os.getenv("MINER06")
-    ]
-
     if deal_option == "F":
         return [
             os.getenv("MINER01"),
-            os.getenv("MINER02"),
+            os.getenv("MINER03"),
             os.getenv("MINER04"),
             os.getenv("MINER05"),
             os.getenv("MINER06")
